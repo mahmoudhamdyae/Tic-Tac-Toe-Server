@@ -1,11 +1,13 @@
 package server;
 
+import server.models.User;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import server.models.State;
 
 public class FXMLDocumentBase extends AnchorPane {
 
@@ -33,15 +35,11 @@ public class FXMLDocumentBase extends AnchorPane {
         getChildren().add(button);
         getChildren().add(label);
         
-        
-        
-        
-        
         DataAccess dataAccess = new DataAccess();
         
         // Insert a User
         try {
-            dataAccess.createUser(new User("userName1", "password"));
+            dataAccess.createUser(new User("userName1", "password", State.ONLINE));
         } catch (SQLException ex) {
             Logger.getLogger(FXMLDocumentBase.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -49,10 +47,11 @@ public class FXMLDocumentBase extends AnchorPane {
         // Get Users
         try {
             System.out.println("Size: " + dataAccess.getUsers().size());
-//            System.out.println("Size: " + dataAccess.getUsers().get(0).getId());
 //            System.out.println("Size: " + dataAccess.getUsers().get(0).getUserName());
 //            System.out.println("Size: " + dataAccess.getUsers().get(0).getPassword());
         } catch (SQLException ex) {
+            Logger.getLogger(FXMLDocumentBase.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
             Logger.getLogger(FXMLDocumentBase.class.getName()).log(Level.SEVERE, null, ex);
         }
 

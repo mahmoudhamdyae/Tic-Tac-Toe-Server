@@ -1,15 +1,15 @@
-package server;
-
-import java.util.UUID;
+package server.models;
 
 public class User {
     
     private String userName;
     private String password;
+    private State state;
     
-    public User(String userName, String password) {
+    public User(String userName, String password, State state) {
         this.userName = userName;
         this.password = password;
+        this.state = state;
     }
 
     public String getUserName() {
@@ -26,5 +26,13 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+    
+    public State getState() {
+        return state;
+    }
+
+    public void setState(State state) {
+        this.state = state;
     }
 }

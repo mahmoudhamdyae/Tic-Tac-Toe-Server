@@ -7,6 +7,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import server.models.State;
+import server.models.User;
 
 public class DataAccess {
     
@@ -32,9 +34,10 @@ public class DataAccess {
     
     public void createUser(User user) throws SQLException {
         con.setAutoCommit(false);
-        PreparedStatement pst = con.prepareStatement("INSERT INTO users VALUES (?, ?)");
+        PreparedStatement pst = con.prepareStatement("INSERT INTO users VALUES (?, ?, ?)");
         pst.setString(1, user.getUserName());
         pst.setString(2, user.getPassword());
+        pst.setString(3, user.getState().getValue());
         pst.addBatch();
         
         pst.executeBatch();
@@ -47,12 +50,27 @@ public class DataAccess {
         getData();
     }
     
-    public ArrayList<User> getUsers() throws SQLException {
+    public ArrayList<User> getUsers() throws SQLException, Exception {
         ArrayList<User> users = new ArrayList<>();
         while(rs.next()) {
+            State state;
+            switch(rs.getString(3)) {
+                case "online":
+                    state = State.ONLINE;
+                    break;
+                case "in_game":
+                    state = State.IN_GAME;
+                    break;
+                case "offline":
+                    state = State.OFFLINE;
+                    break;
+                default:
+                    throw new Exception("Error State");
+            }
             User user = new User(
                     rs.getString(1),
-                    rs.getString(2)
+                    rs.getString(2),
+                    state
             );
             users.add(user);
         }
