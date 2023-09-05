@@ -32,22 +32,39 @@ public class DataAccess {
         rs = statement.executeQuery(queryString);
     }
     
-    public void createUser(User user) throws SQLException {
+    public Boolean signUp(User user) throws SQLException, Exception {
+        
+        // Check if userName exist
+        if (isExist(user)) return false;
+        
+        // Add User to database
         con.setAutoCommit(false);
         PreparedStatement pst = con.prepareStatement("INSERT INTO users VALUES (?, ?, ?)");
         pst.setString(1, user.getUserName());
         pst.setString(2, user.getPassword());
         pst.setString(3, user.getState().getValue());
         pst.addBatch();
-        
         pst.executeBatch();
-        
         
         pst.close();
         
         con.commit();
         
         getData();
+        
+        return true;
+    }
+    
+    public Boolean logIn(User user) throws Exception {
+        
+        ArrayList<User> users = getUsers();
+        for(User it: users) {
+            if (it.getUserName().equals(user.getUserName()) 
+                    && it.getPassword().equals(user.getPassword())) {
+                return true;
+            }
+        }
+        return false;
     }
     
     public ArrayList<User> getUsers() throws SQLException, Exception {
@@ -75,6 +92,16 @@ public class DataAccess {
             users.add(user);
         }
         return users;
+    }
+    
+    private Boolean isExist(User user) throws Exception {
+        ArrayList<User> users = getUsers();
+        for(User it: users) {
+            if (it.getUserName().equals(user.getUserName())) {
+                return true;
+            }
+        }
+        return false;
     }
     
 }
