@@ -8,7 +8,7 @@ public class Server extends Application {
     
     @Override
     public void start(Stage stage) throws Exception {
-        FXMLDocumentBase root = new FXMLDocumentBase();
+        UsersBase root = new UsersBase();
         
         Scene scene = new Scene(root);
         
