@@ -12,16 +12,13 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import server.models.User;
+import server.utils.Constants;
 
 public class ServerHandler extends Thread {
     
-    ServerSocket serverSocket;
-    Socket socket;
     DataInputStream dis ;
     PrintStream ps;
     Boolean isServerRunning;
-    
-    static Vector<ServerHandler> clientsVector = new Vector<ServerHandler>();
     
     public ServerHandler(Socket socket, Boolean isServerRunning) {
         this.isServerRunning = isServerRunning;
@@ -31,7 +28,6 @@ public class ServerHandler extends Thread {
         } catch (IOException ex) {
             Logger.getLogger(ServerHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
-        clientsVector.add(this);
         start();
     }
     
@@ -42,38 +38,41 @@ public class ServerHandler extends Thread {
             String str;
             try {
                 BufferedReader br = new BufferedReader(new InputStreamReader(dis));
-                str = br.readLine();
                 if (isServerRunning) {
-                    if (str.equals("0")) {
+                    str = br.readLine();
+                    ps.println(Constants.SERVER_RUNNING); // Server Running
+                    
+                    if (str.equals(Constants.LOGIN)) {
                         // Log in
                         String userName = br.readLine();
                         String password = br.readLine();
                         try {
                             ps.println(userName); // Return UserName
-                            ps.println("0"); // Return Log In
+                            ps.println(Constants.LOGIN); // Return Log In
                             if (dataAccess.logIn(new User(userName, password, server.models.State.ONLINE))) {
                                 // Log In Complete
-                                ps.println("1");
+                                ps.println(Constants.LOGIN_SUCCESS);
                             } else {
                                 // Wrong UserName or Password
-                                ps.println("0");
+                                ps.println(Constants.NotValidPasswordAndUseName);
                             }
                         } catch (Exception ex) {
                             Logger.getLogger(ServerHandler.class.getName()).log(Level.SEVERE, null, ex);
                         }
-                    } else if (str.equals("1")) {
+                        
+                    } else if (str.equals(Constants.REGISTER)) {
                         // Sign up
                         String userName = br.readLine();
                         String password = br.readLine();
                         try {
                             ps.println(userName); // Return UserName
-                            ps.println("1"); // Return Sign Up
+                            ps.println(Constants.REGISTER); // Return Sign Up
                             if (dataAccess.signUp(new User(userName, password, server.models.State.ONLINE))) {
-                                // SIgn Up Complete
-                                ps.println("1");
+                                // Sign Up Complete
+                                ps.println(Constants.Valid_REGISTER);
                             } else {
                                 // Sign Up Failed
-                                ps.println("0");
+                                ps.println(Constants.NotValid_REGISTER);
                             }
                         } catch (SQLException ex) {
                             Logger.getLogger(ServerHandler.class.getName()).log(Level.SEVERE, null, ex);
@@ -81,19 +80,14 @@ public class ServerHandler extends Thread {
                             Logger.getLogger(ServerHandler.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     }
+                    
                 } else {
                     // Server Stopped
-                    ps.println("-1");
+                    ps.println(Constants.SERVER_STOP);
                 }
             } catch (IOException ex) {
                 Logger.getLogger(ServerHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }
-    }
-    
-    void sendMessageToAll(String msg) {
-        for(int i = 0 ; i < clientsVector.size(); i++) {
-            clientsVector.get(i).ps.println(msg);
         }
     }
 }

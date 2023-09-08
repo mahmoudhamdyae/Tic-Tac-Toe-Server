@@ -3,6 +3,7 @@ package server;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.ActionEvent;
@@ -12,6 +13,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import server.utils.Constants;
 
 public class UsersBase extends AnchorPane {
 
@@ -118,7 +120,9 @@ public class UsersBase extends AnchorPane {
         
         // Server Socket
         try {
-            serverSocket = new ServerSocket(5007);
+            serverSocket = new ServerSocket(Constants.PORT);
+        } catch (SocketException ex) {
+            Logger.getLogger(UsersBase.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(UsersBase.class.getName()).log(Level.SEVERE, null, ex);
         }
