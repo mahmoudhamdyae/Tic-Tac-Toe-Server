@@ -6,19 +6,19 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.Socket;
+import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import server.models.User;
+import server.utils.Constants;
 
 public class ServerHandler extends Thread {
-
-    private Socket socket;
-    private DataInputStream dis;
-    private PrintStream ps;
-    private Boolean isServerRunning;
-
+    
+    DataInputStream dis ;
+    PrintStream ps;
+    Boolean isServerRunning;
+    
     public ServerHandler(Socket socket, Boolean isServerRunning) {
-        this.socket = socket;
         this.isServerRunning = isServerRunning;
         try {
             dis = new DataInputStream(socket.getInputStream());
@@ -28,62 +28,67 @@ public class ServerHandler extends Thread {
         }
         start();
     }
-
     
     public void run() {
         DataAccess dataAccess = new DataAccess();
-
-        while (isServerRunning) {
+        
+        while(true) {
             String str;
             try {
                 BufferedReader br = new BufferedReader(new InputStreamReader(dis));
-                str = br.readLine();
                 if (isServerRunning) {
-                    if (str.equals("0")) {
+                    str = br.readLine();
+                    ps.println(Constants.SERVER_RUNNING); // Server Running
+                    
+                    if (str.equals(Constants.LOGIN)) {
                         // Log in
                         String userName = br.readLine();
                         String password = br.readLine();
                         try {
                             ps.println(userName); // Return UserName
-                            ps.println("0"); // Return Log In
+                            ps.println(Constants.LOGIN); // Return Log In
                             User user = new User(userName, password, server.models.State.ONLINE);
                             if (dataAccess.logIn(user)) {
                                 // Log In Complete
-                                ps.println("1");
+                                ps.println(Constants.LOGIN_SUCCESS);
                                 // Send the connected user to UsersBase
                                 sendConnectedUserToUsersBase(user);
                             } else {
                                 // Wrong UserName or Password
-                                ps.println("0");
+                                ps.println(Constants.NotValidPasswordAndUseName);
                             }
                         } catch (Exception ex) {
                             Logger.getLogger(ServerHandler.class.getName()).log(Level.SEVERE, null, ex);
                         }
-                    } else if (str.equals("1")) {
+                        
+                    } else if (str.equals(Constants.REGISTER)) {
                         // Sign up
                         String userName = br.readLine();
                         String password = br.readLine();
                         try {
                             ps.println(userName); // Return UserName
-                            ps.println("1"); // Return Sign Up
+                            ps.println(Constants.REGISTER); // Return Sign Up
                             User user = new User(userName, password, server.models.State.ONLINE);
                             if (dataAccess.signUp(user)) {
                                 // Sign Up Complete
-                                ps.println("1");
+                                ps.println(Constants.Valid_REGISTER);
                                 // Send the connected user to UsersBase
                                 sendConnectedUserToUsersBase(user);
                             } else {
                                 // Sign Up Failed
-                                ps.println("0");
+                                ps.println(Constants.NotValid_REGISTER);
                             }
+                        } catch (SQLException ex) {
+                            Logger.getLogger(ServerHandler.class.getName()).log(Level.SEVERE, null, ex);
                         } catch (Exception ex) {
                             Logger.getLogger(ServerHandler.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     }
+                    
                 } else {
                     // Server Stopped
-                    ps.println("-1");
-                }
+                    ps.println(Constants.SERVER_STOP);
+}
             } catch (IOException ex) {
                 Logger.getLogger(ServerHandler.class.getName()).log(Level.SEVERE, null, ex);
             }

@@ -17,6 +17,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import server.models.User;
+import server.utils.Constants;
 
 public class UsersBase extends AnchorPane {
 
@@ -26,16 +27,16 @@ public class UsersBase extends AnchorPane {
     protected final Button startButton;
     protected final Button stopButton;
     protected final Button dashboardButton;
-    protected final ListView<User> offlineList;
-    protected final ListView<User> inGameList;
-    protected final ListView<User> onlineList;
+    protected final ListView<String> offlineList;
+    protected final ListView<String> inGameList;
+    protected final ListView<String> onlineList;
     ServerSocket serverSocket;
     private Boolean isServerRunning = true;
 
     // Create observable lists for each user state
-    private ObservableList<User> offlineUsers = FXCollections.observableArrayList();
-    private ObservableList<User> inGameUsers = FXCollections.observableArrayList();
-    private ObservableList<User> onlineUsers = FXCollections.observableArrayList();
+    private ObservableList<String> offlineUsers = FXCollections.observableArrayList();
+    private ObservableList<String> inGameUsers = FXCollections.observableArrayList();
+    private ObservableList<String> onlineUsers = FXCollections.observableArrayList();
 
     private static UsersBase instance; // Static instance variable
 
@@ -79,7 +80,6 @@ public class UsersBase extends AnchorPane {
         startButton.setTextFill(javafx.scene.paint.Color.WHITE);
         startButton.setFont(new Font(18.0));
 
-        // Stop Button on click
         stopButton.setLayoutX(220.0);
         stopButton.setLayoutY(349.0);
         stopButton.setMnemonicParsing(false);
@@ -143,7 +143,7 @@ public class UsersBase extends AnchorPane {
 
         // Server Socket
         try {
-            serverSocket = new ServerSocket(5012);
+            serverSocket = new ServerSocket(Constants.PORT);
         } catch (IOException ex) {
             Logger.getLogger(UsersBase.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -207,13 +207,13 @@ public class UsersBase extends AnchorPane {
     void addConnectedUser(User user) {
         switch (user.getState()) {
             case OFFLINE:
-                offlineUsers.add(user);
+                offlineUsers.add(user.getUserName());
                 break;
             case IN_GAME:
-                inGameUsers.add(user);
+                inGameUsers.add(user.getUserName());
                 break;
             case ONLINE:
-                onlineUsers.add(user);
+                onlineUsers.add(user.getUserName());
                 break;
             default:
                 // Handle other states as needed
