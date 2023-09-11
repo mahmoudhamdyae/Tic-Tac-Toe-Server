@@ -3,9 +3,11 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/Z:/home/khaled/lol/ITI/ProjectTicToc/Server/Tic-Tac-Toe-Server/src/server/ServerHandler.java</file>
-            <file>file:/Z:/home/khaled/lol/ITI/ProjectTicToc/Server/Tic-Tac-Toe-Server/src/server/DataAccess.java</file>
-            <file>file:/Z:/home/khaled/lol/ITI/ProjectTicToc/Server/Tic-Tac-Toe-Server/src/server/utils/Constants.java</file>
+            <file>file:/D:/Projects/JavaITI/TicTacToe/Server/src/server/Server.java</file>
+            <file>file:/D:/Projects/JavaITI/TicTacToe/Server/src/server/utils/Constants.java</file>
+            <file>file:/D:/Projects/JavaITI/TicTacToe/Server/src/server/UsersBase.java</file>
+            <file>file:/D:/Projects/JavaITI/TicTacToe/Server/src/server/DataAccess.java</file>
+            <file>file:/D:/Projects/JavaITI/TicTacToe/Server/src/server/ServerHandler.java</file>
         </group>
     </open-files>
 </project-private>
