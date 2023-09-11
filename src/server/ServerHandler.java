@@ -87,6 +87,7 @@ public class ServerHandler extends Thread {
                     }
                     
                     else if (str.equals(Constants.GET_USERS)) {
+                        // Client wants to get all users
                         String userName1 = br.readLine();
                         ps.println(userName1); // Return UserName
                         ps.println(Constants.GET_USERS); // Return GetUsers
@@ -98,6 +99,31 @@ public class ServerHandler extends Thread {
                         for (int i = 0; i < noOfUsers; i++) {
                             ps.println(users.get(i).getUserName());
                             ps.println(users.get(i).getState().getValue());
+                        }
+                        
+                    } else if (str.equals(Constants.PLAY_WITH_USER)) {
+                        // Client clicked on one of the users to play with
+                        String userName1 = br.readLine();
+                        String userName2 = br.readLine();
+                        
+                        ps.println(userName2); // Return UserName2
+                        ps.println(Constants.PLAY_WITH_USER); // Return PLAY_WITH_USER
+                        
+                    } else if (str.equals(Constants.PLAY_WITH_USER_RESPONSE)) {
+                        String userName = dis.readLine();
+                        String userResponse = dis.readLine();
+                        ps.println(userName);
+                        ps.println(Constants.PLAY_WITH_USER_RESPONSE);
+                        if (userResponse.equals(Constants.USER_ACCEPTED)) {
+                            ps.println(Constants.USER_ACCEPTED);
+                            
+                            System.out.println("User Accepted");
+                            
+                        } else {
+                            ps.println(Constants.USER_REJECTED);
+                            
+                            System.out.println("User Accepted");
+                            
                         }
                     }
                 }
