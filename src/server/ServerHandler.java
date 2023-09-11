@@ -19,7 +19,8 @@ public class ServerHandler extends Thread {
     DataInputStream dis ;
     PrintStream ps;
     Boolean isServerRunning;
-    
+            DataAccess dataAccess = new DataAccess();
+
     public ServerHandler(Socket socket, Boolean isServerRunning) {
         this.isServerRunning = isServerRunning;
         try {
@@ -32,16 +33,15 @@ public class ServerHandler extends Thread {
     }
     
     public void run() {
-        DataAccess dataAccess = new DataAccess();
         
         while(true) {
             String str;
             try {
                 BufferedReader br = new BufferedReader(new InputStreamReader(dis));
+                  str = br.readLine();
                 if (isServerRunning) {
-                    str = br.readLine();
-                    ps.println(Constants.SERVER_RUNNING); // Server Running
-                    
+                 ps.println(Constants.SERVER_RUNNING); // Server Running
+                 if(str!=null){
                     if (str.equals(Constants.LOGIN)) {
                         // Log in
                         String userName = br.readLine();
@@ -49,12 +49,14 @@ public class ServerHandler extends Thread {
                         try {
                             ps.println(userName); // Return UserName
                             ps.println(Constants.LOGIN); // Return Log In
-                            if (dataAccess.logIn(new User(userName, password, server.models.State.ONLINE))) {
+                            boolean ss=dataAccess.logIn(new User(userName, password, server.models.State.ONLINE));
+                            System.out.println(ss+"");
+                            if (ss) {
                                 // Log In Complete
-                                ps.println(Constants.LOGIN_SUCCESS);
+                                ps.println(Constants.VALID_LOGIN);
                             } else {
                                 // Wrong UserName or Password
-                                ps.println(Constants.NotValidPasswordAndUseName);
+                                ps.println(Constants.NOT_VALID_LOGIN);
                             }
                         } catch (Exception ex) {
                             Logger.getLogger(ServerHandler.class.getName()).log(Level.SEVERE, null, ex);
@@ -69,10 +71,10 @@ public class ServerHandler extends Thread {
                             ps.println(Constants.REGISTER); // Return Sign Up
                             if (dataAccess.signUp(new User(userName, password, server.models.State.ONLINE))) {
                                 // Sign Up Complete
-                                ps.println(Constants.Valid_REGISTER);
+                                ps.println(Constants.VALID_REGISTER);
                             } else {
                                 // Sign Up Failed
-                                ps.println(Constants.NotValid_REGISTER);
+                                ps.println(Constants.NOT_VALID_REGISTER);
                             }
                         } catch (SQLException ex) {
                             Logger.getLogger(ServerHandler.class.getName()).log(Level.SEVERE, null, ex);
@@ -80,7 +82,7 @@ public class ServerHandler extends Thread {
                             Logger.getLogger(ServerHandler.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     }
-                    
+                }
                 } else {
                     // Server Stopped
                     ps.println(Constants.SERVER_STOP);

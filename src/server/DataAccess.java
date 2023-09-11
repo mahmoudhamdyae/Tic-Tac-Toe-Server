@@ -14,12 +14,12 @@ public class DataAccess {
     
     Connection con;
     ResultSet rs;
+    Statement statement;
     
     public DataAccess() {
         try {
             DriverManager.registerDriver(new org.apache.derby.jdbc.ClientDriver());
-            con = DriverManager.getConnection("jdbc:derby://localhost:1527/tic_tac_toe", "root", "root");
-            
+            con = DriverManager.getConnection("jdbc:derby://localhost:1527/tic_tac_toe", "root", "root");           
             getData();
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -27,49 +27,63 @@ public class DataAccess {
     }
     
     private void getData() throws SQLException {
-        Statement statement = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-        String queryString = "SELECT * FROM users";
-        rs = statement.executeQuery(queryString);
+         statement = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
+        rs = statement.executeQuery("SELECT * FROM USERS");
     }
     
     public Boolean signUp(User user) throws SQLException, Exception {
         
         // Check if userName exist
-        if (isExist(user)) return false;
-        
-        // Add User to database
+        if (isExist(user)){
+        System.out.println("is  Exist");
+        return false;
+                } else{
+         System.out.println("is not  Exist");
+              // Add User to database
         con.setAutoCommit(false);
-        PreparedStatement pst = con.prepareStatement("INSERT INTO users VALUES (?, ?, ?)");
+        PreparedStatement pst = con.prepareStatement("INSERT INTO USERS VALUES (?, ?, ?)");
         pst.setString(1, user.getUserName());
         pst.setString(2, user.getPassword());
         pst.setString(3, user.getState().getValue());
         pst.addBatch();
-        pst.executeBatch();
-        
-        pst.close();
+//     pst.executeBatch();
+       
+       pst.close();
         
         con.commit();
         
         getData();
         
         return true;
+        }
     }
     
-    public Boolean logIn(User user) throws Exception {
-        
-        ArrayList<User> users = getUsers();
-        for(User it: users) {
-            if (it.getUserName().equals(user.getUserName()) 
-                    && it.getPassword().equals(user.getPassword())) {
-                return true;
+      public Boolean logIn(User user) throws Exception {
+            if (rs != null) {
+           while(rs.next()) {
+               if (user.getUserName().equals(rs.getString(1)) 
+                        && user.getPassword().equals(rs.getString(2))) {
+                   //  rs.beforeFirst();
+                    return true;
+                }
+                if (rs.isLast()) {
+                      rs.beforeFirst();
+               return false;
+                }
+               
             }
+        }else{
+            System.out.println("rs is null");
         }
-        return false;
-    }
+       return false;
+        }
     
     public ArrayList<User> getUsers() throws SQLException, Exception {
         ArrayList<User> users = new ArrayList<>();
-        while(rs.next()) {
+           if (rs.isLast()) {
+                      rs.beforeFirst();
+                }
+    while(rs.next()) {
             State state;
             switch(rs.getString(3)) {
                 case "online":
@@ -91,17 +105,28 @@ public class DataAccess {
             );
             users.add(user);
         }
+  
         return users;
     }
     
-    private Boolean isExist(User user) throws Exception {
-        ArrayList<User> users = getUsers();
-        for(User it: users) {
-            if (it.getUserName().equals(user.getUserName())) {
-                return true;
+private Boolean isExist(User user) throws Exception {
+          if (rs != null) {
+           while(rs.next()) {
+               if (user.getUserName().equals(rs.getString(1)) 
+                        && user.getPassword().equals(rs.getString(2))) {
+                   rs.beforeFirst();
+                    return true;
+                }
+                if (rs.isLast()) {
+                      rs.beforeFirst();
+               return false;
+                }
+               
             }
+        }else{
+            System.out.println("rs is null");
         }
-        return false;
-    }
-    
+       return false;
+}
+
 }
