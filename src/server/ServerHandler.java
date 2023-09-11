@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.Socket;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import server.models.User;
@@ -84,12 +85,29 @@ public class ServerHandler extends Thread {
                             Logger.getLogger(ServerHandler.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     }
+                    
+                    else if (str.equals(Constants.GET_USERS)) {
+                        String userName1 = br.readLine();
+                        ps.println(userName1); // Return UserName
+                        ps.println(Constants.GET_USERS); // Return GetUsers
+                        
+                        // Return Users
+                        ArrayList<User> users = dataAccess.getUsers();
+                        int noOfUsers = users.size();
+                        ps.println(noOfUsers);
+                        for (int i = 0; i < noOfUsers; i++) {
+                            ps.println(users.get(i).getUserName());
+                            ps.println(users.get(i).getState().getValue());
+                        }
+                    }
                 }
                 } else {
                     // Server Stopped
                     ps.println(Constants.SERVER_STOP);
 }
             } catch (IOException ex) {
+                Logger.getLogger(ServerHandler.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
                 Logger.getLogger(ServerHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
         }

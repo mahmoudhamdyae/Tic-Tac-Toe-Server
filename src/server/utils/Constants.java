@@ -20,5 +20,5 @@ public class Constants {
     public    final static String NOT_VALID_REGISTER="NOT_VALID_REGISTER";
     public    final static String VALID_REGISTER="VALID_REGISTER";
     
-    
+    public final static String GET_USERS = "GET_USERS";
 }
