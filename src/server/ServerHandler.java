@@ -5,10 +5,8 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.sql.SQLException;
-import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import server.models.User;
@@ -49,11 +47,12 @@ public class ServerHandler extends Thread {
                         try {
                             ps.println(userName); // Return UserName
                             ps.println(Constants.LOGIN); // Return Log In
-                            boolean ss=dataAccess.logIn(new User(userName, password, server.models.State.ONLINE));
-                            System.out.println(ss+"");
-                            if (ss) {
+                            User user = new User(userName, password, server.models.State.ONLINE);
+                            if (dataAccess.logIn(user)) {
                                 // Log In Complete
                                 ps.println(Constants.VALID_LOGIN);
+                                // Send the connected user to UsersBase
+                                sendConnectedUserToUsersBase(user);
                             } else {
                                 // Wrong UserName or Password
                                 ps.println(Constants.NOT_VALID_LOGIN);
@@ -69,9 +68,12 @@ public class ServerHandler extends Thread {
                         try {
                             ps.println(userName); // Return UserName
                             ps.println(Constants.REGISTER); // Return Sign Up
-                            if (dataAccess.signUp(new User(userName, password, server.models.State.ONLINE))) {
+                            User user = new User(userName, password, server.models.State.ONLINE);
+                            if (dataAccess.signUp(user)) {
                                 // Sign Up Complete
                                 ps.println(Constants.VALID_REGISTER);
+                                // Send the connected user to UsersBase
+                                sendConnectedUserToUsersBase(user);
                             } else {
                                 // Sign Up Failed
                                 ps.println(Constants.NOT_VALID_REGISTER);
@@ -86,10 +88,17 @@ public class ServerHandler extends Thread {
                 } else {
                     // Server Stopped
                     ps.println(Constants.SERVER_STOP);
-                }
+}
             } catch (IOException ex) {
                 Logger.getLogger(ServerHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
+        }
+    }
+
+    // Send the connected user to the UsersBase class
+    private void sendConnectedUserToUsersBase(User user) {
+        if (UsersBase.getInstance() != null) {
+            UsersBase.getInstance().addConnectedUser(user);
         }
     }
 }

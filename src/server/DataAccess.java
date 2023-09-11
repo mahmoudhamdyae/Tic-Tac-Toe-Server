@@ -59,6 +59,33 @@ private Boolean isUserNameExist(User user) throws Exception {
        return false;
 }
 
+public ArrayList<User> getUsers() throws SQLException, Exception {
+        ArrayList<User> users = new ArrayList<>();
+        while(rs.next()) {
+            State state;
+            switch(rs.getString(3)) {
+                case "online":
+                    state = State.ONLINE;
+                    break;
+                case "in_game":
+                    state = State.IN_GAME;
+                    break;
+                case "offline":
+                    state = State.OFFLINE;
+                    break;
+                default:
+                    throw new Exception("Error State");
+            }
+            User user = new User(
+                    rs.getString(1),
+                    rs.getString(2),
+                    state
+            );
+            users.add(user);
+        }
+        return users;
+    }
+
 private void addUserToDataBase(User user) throws SQLException, Exception{
         con.setAutoCommit(false);
         PreparedStatement pst = con.prepareStatement("INSERT INTO USERS VALUES (?, ?, ?)");
