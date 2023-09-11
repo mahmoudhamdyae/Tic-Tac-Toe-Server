@@ -16,7 +16,7 @@ public class DataAccess {
     ResultSet rs;
     Statement statement;
     
-    public DataAccess() {
+public DataAccess() {
         try {
             DriverManager.registerDriver(new org.apache.derby.jdbc.ClientDriver());
             con = DriverManager.getConnection("jdbc:derby://localhost:1527/tic_tac_toe", "root", "root");           
@@ -27,14 +27,14 @@ public class DataAccess {
         }
     }
     
-    public Boolean signUp(User user) throws SQLException, Exception {
+public Boolean signUp(User user) throws SQLException, Exception {
         
         if (isUserNameExist(user)){return false;} 
   
         addUserToDataBase(user);
    return true;
     }
-    
+  
 public Boolean logIn(User user) throws Exception {
             if (rs != null) {
            while(rs.next()) {
@@ -46,7 +46,6 @@ public Boolean logIn(User user) throws Exception {
         rs.beforeFirst();
        return false;
         }
-    
     
 private Boolean isUserNameExist(User user) throws Exception {
           if (rs != null) {
@@ -60,8 +59,8 @@ private Boolean isUserNameExist(User user) throws Exception {
        return false;
 }
 
-private void addUserToDataBase(User user)throws SQLException, Exception{
-     con.setAutoCommit(false);
+private void addUserToDataBase(User user) throws SQLException, Exception{
+        con.setAutoCommit(false);
         PreparedStatement pst = con.prepareStatement("INSERT INTO USERS VALUES (?, ?, ?)");
         pst.setString(1, user.getUserName());
         pst.setString(2, user.getPassword());
