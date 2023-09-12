@@ -5,8 +5,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -57,6 +59,20 @@ public class DashboardScreen extends AnchorPane {
         // Creating a Pie chart 
         PieChart pieChart = new PieChart(pieChartData);
         
+        final Label caption = new Label("");
+        caption.setTextFill(Color.BLUE);
+        caption.setStyle("-fx-font: 24 arial;");
+        for (final PieChart.Data data : pieChart.getData()) {
+            data.getNode().addEventHandler(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
+                @Override 
+                public void handle(MouseEvent e) {
+                    caption.setTranslateX(e.getSceneX());
+                    caption.setTranslateY(e.getSceneY());
+                    caption.setText(String.valueOf(data.getPieValue()) + "%");
+                }
+            });
+        }
+    
         // Setting the title of the Pie chart 
         pieChart.setTitle("Tic Tac Toe Users");
         
@@ -81,6 +97,7 @@ public class DashboardScreen extends AnchorPane {
             getChildren().add(noUsersLabel);
         } else {
             getChildren().add(pieChart);
+            getChildren().add(caption);
         }
     }
 }
