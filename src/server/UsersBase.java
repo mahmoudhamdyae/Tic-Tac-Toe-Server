@@ -190,8 +190,8 @@ public class UsersBase extends AnchorPane {
         });
 
         // Dashboard Button on click
-        dashboardButton.setOnAction((ActionEvent event) -> {
-        });
+//        dashboardButton.setOnAction((ActionEvent event) -> {
+//        });
     }
 
     // Singleton Pattern
