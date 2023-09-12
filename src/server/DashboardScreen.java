@@ -57,13 +57,6 @@ public class DashboardScreen extends AnchorPane {
         // Creating a Pie chart 
         PieChart pieChart = new PieChart(pieChartData);
         
-//        applyCustomColorSequence(
-//                pieChartData, 
-//                "green", 
-//                "red", 
-//                "yellow"
-//        );
-        
         // Setting the title of the Pie chart 
         pieChart.setTitle("Tic Tac Toe Users");
         
@@ -88,17 +81,6 @@ public class DashboardScreen extends AnchorPane {
             getChildren().add(noUsersLabel);
         } else {
             getChildren().add(pieChart);
-        }
-    }
-    
-    private void applyCustomColorSequence(ObservableList<PieChart.Data> pieChartData, String... pieColors) {
-        int i = 0;
-        for (PieChart.Data data : pieChartData) {
-            String color = pieColors[i % pieColors.length];
-            data.getNode().setStyle(
-                    "-fx-pie-color: " + color + ";"
-            );
-            i++;
         }
     }
 }
