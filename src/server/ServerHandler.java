@@ -93,12 +93,11 @@ public class ServerHandler extends Thread {
                         ps.println(Constants.GET_USERS); // Return GetUsers
                         
                         // Return Users
-                        ArrayList<User> users = dataAccess.getUsers();
+                        ArrayList<String> users = dataAccess.getOnlineUsers();
                         int noOfUsers = users.size();
                         ps.println(noOfUsers);
                         for (int i = 0; i < noOfUsers; i++) {
-                            ps.println(users.get(i).getUserName());
-                            ps.println(users.get(i).getState().getValue());
+                            ps.println(users.get(i));
                         }
                         
                     } else if (str.equals(Constants.PLAY_WITH_USER)) {

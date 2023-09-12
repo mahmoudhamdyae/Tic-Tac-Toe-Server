@@ -83,6 +83,18 @@ public ArrayList<User> getUsers() throws SQLException, Exception {
             );
             users.add(user);
         }
+        rs.beforeFirst();
+        return users;
+    }
+
+public ArrayList<String> getOnlineUsers() throws SQLException, Exception {
+        ArrayList<String> users = new ArrayList<>();
+        while(rs.next()) {
+            if (rs.getString(3).equals("online")) {
+                users.add(rs.getString(1));
+            }            
+        }
+        rs.beforeFirst();
         return users;
     }
 
