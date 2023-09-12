@@ -14,6 +14,8 @@ public class Server extends Application {
         
         Scene scene = new Scene(root);
         Scene dahboardScene = new Scene(dashboard);
+        dahboardScene.getStylesheets().add(getClass()
+                    .getResource("dashboardStyle.css").toExternalForm());
         
         stage.setScene(scene);
         stage.show();
