@@ -61,6 +61,7 @@ private Boolean isUserNameExist(User user) throws Exception {
 
 public ArrayList<User> getUsers() throws SQLException, Exception {
         ArrayList<User> users = new ArrayList<>();
+        rs.beforeFirst();
         while(rs.next()) {
             State state;
             switch(rs.getString(3)) {
@@ -83,18 +84,18 @@ public ArrayList<User> getUsers() throws SQLException, Exception {
             );
             users.add(user);
         }
-        rs.beforeFirst();
         return users;
     }
 
 public ArrayList<String> getOnlineUsers() throws SQLException, Exception {
         ArrayList<String> users = new ArrayList<>();
+        rs.beforeFirst();
         while(rs.next()) {
             if (rs.getString(3).equals("online")) {
                 users.add(rs.getString(1));
             }            
         }
-        rs.beforeFirst();
+        
         return users;
     }
 
