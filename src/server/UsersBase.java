@@ -153,7 +153,8 @@ public class UsersBase extends AnchorPane {
             while (isServerRunning) {
                 try {
                     Socket s = serverSocket.accept();
-                    ServerHandler handler = new ServerHandler(s, isServerRunning);
+//                    ServerHandler handler = new ServerHandler(s, isServerRunning);
+                    ServerHandler2 handler = new ServerHandler2(s, isServerRunning);
                 } catch (IOException ex) {
                     Logger.getLogger(UsersBase.class.getName()).log(Level.SEVERE, null, ex);
                 }

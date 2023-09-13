@@ -25,4 +25,6 @@ public class Constants {
     public final static String PLAY_WITH_USER_RESPONSE = "PLAY_WITH_USER_RESPONSE";
     public final static String USER_ACCEPTED = "USER_ACCEPTED";
     public final static String USER_REJECTED = "USER_REJECTED";
+    
+    public final static String PLAY_ONLINE = "PLAY_ONLINE";
 }
