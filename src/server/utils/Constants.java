@@ -21,7 +21,7 @@ public class Constants {
     public    final static String VALID_REGISTER="VALID_REGISTER";
     
     public final static String GET_USERS = "GET_USERS";
-    public final static String PLAY_WITH_USER = "PLAY_WITH_USER";
+    public final static String SEBD_REQUEST_TO_PLAY = "SEBD_REQUEST_TO_PLAY";
     public final static String PLAY_WITH_USER_RESPONSE = "PLAY_WITH_USER_RESPONSE";
     public final static String USER_ACCEPTED = "USER_ACCEPTED";
     public final static String USER_REJECTED = "USER_REJECTED";
