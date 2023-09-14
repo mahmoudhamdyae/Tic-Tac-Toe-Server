@@ -12,6 +12,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import server.models.User;
 import server.utils.Constants;
+import server.models.State;
 
 public class ServerHandler2 extends Thread {
     
@@ -53,7 +54,7 @@ public class ServerHandler2 extends Thread {
                                 // Log In Complete
                                 ps.println(Constants.VALID_LOGIN);
                                 // Send the connected user to UsersBase
-                                sendConnectedUserToUsersBase(user);
+//                                sendConnectedUserToUsersBase(user);
                             } else {
                                 // Wrong UserName or Password
                                 ps.println(Constants.NOT_VALID_LOGIN);
@@ -74,7 +75,7 @@ public class ServerHandler2 extends Thread {
                                 // Sign Up Complete
                                 ps.println(Constants.VALID_REGISTER);
                                 // Send the connected user to UsersBase
-                                sendConnectedUserToUsersBase(user);
+//                                sendConnectedUserToUsersBase(user);
                             } else {
                                 // Sign Up Failed
                                 ps.println(Constants.NOT_VALID_REGISTER);
@@ -135,6 +136,29 @@ public class ServerHandler2 extends Thread {
                         ps.println("Guest-X");
                         ps.println(1);
                         ps.println(1);
+                    } else if (str.equals(Constants.CHANGE_STATE)) {
+                        String userName = br.readLine();
+                        String state = br.readLine();
+                        if (state.equals("offline")) {
+                            dataAccess.UpdateState(userName, 1);
+                        } else if (state.equals("in_game")) {
+                            dataAccess.UpdateState(userName, 2);
+                        }
+                    } else if (str.equals(Constants.CHANGE_SCORE)) {
+                        String userName = br.readLine();
+                        String gameState = br.readLine();
+//                        dataAccess.UpdateState(userName, 0);
+                        switch(gameState) {
+                            case "win":
+                                dataAccess.UpdateScore(userName, 0);
+                                break;
+                            case "lose":
+                                dataAccess.UpdateScore(userName, 1);
+                                break;
+                            case "draw":
+                                dataAccess.UpdateScore(userName, 2);
+                                break;
+                        }
                     }
                 }
                 } else {
@@ -150,9 +174,9 @@ public class ServerHandler2 extends Thread {
     }
 
     // Send the connected user to the UsersBase class
-    private void sendConnectedUserToUsersBase(User user) {
-        if (UsersBase.getInstance() != null) {
-            UsersBase.getInstance().addConnectedUser(user);
-        }
-    }
+//    private void sendConnectedUserToUsersBase(User user) {
+//        if (UsersBase.getInstance() != null) {
+//            UsersBase.getInstance().addConnectedUser(user);
+//        }
+//    }
 }

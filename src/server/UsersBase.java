@@ -197,12 +197,12 @@ public class UsersBase extends AnchorPane {
 
     // Singleton Pattern
     // Static method to get an instance of UsersBase
-    public static UsersBase getInstance() {
-        if (instance == null) {
-            instance = new UsersBase();
-        }
-        return instance;
-    }
+//    public static UsersBase getInstance() {
+//        if (instance == null) {
+//            instance = new UsersBase();
+//        }
+//        return instance;
+//    }
 
     // Method to add a connected user to the appropriate list
     void addConnectedUser(User user) {

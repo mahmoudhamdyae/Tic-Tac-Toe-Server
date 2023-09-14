@@ -27,4 +27,8 @@ public class Constants {
     public final static String USER_REJECTED = "USER_REJECTED";
     
     public final static String PLAY_ONLINE = "PLAY_ONLINE";
+    
+    public final static String CHANGE_STATE = "CHANGE_STATE";
+    
+    public final static String CHANGE_SCORE = "CHANGE_SCORE";
 }

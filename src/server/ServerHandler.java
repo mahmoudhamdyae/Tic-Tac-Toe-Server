@@ -53,7 +53,7 @@ public class ServerHandler extends Thread {
                                 // Log In Complete
                                 ps.println(Constants.VALID_LOGIN);
                                 // Send the connected user to UsersBase
-                                sendConnectedUserToUsersBase(user);
+//                                sendConnectedUserToUsersBase(user);
                             } else {
                                 // Wrong UserName or Password
                                 ps.println(Constants.NOT_VALID_LOGIN);
@@ -74,7 +74,7 @@ public class ServerHandler extends Thread {
                                 // Sign Up Complete
                                 ps.println(Constants.VALID_REGISTER);
                                 // Send the connected user to UsersBase
-                                sendConnectedUserToUsersBase(user);
+//                                sendConnectedUserToUsersBase(user);
                             } else {
                                 // Sign Up Failed
                                 ps.println(Constants.NOT_VALID_REGISTER);
@@ -139,9 +139,9 @@ public class ServerHandler extends Thread {
     }
 
     // Send the connected user to the UsersBase class
-    private void sendConnectedUserToUsersBase(User user) {
-        if (UsersBase.getInstance() != null) {
-            UsersBase.getInstance().addConnectedUser(user);
-        }
-    }
+//    private void sendConnectedUserToUsersBase(User user) {
+//        if (UsersBase.getInstance() != null) {
+//            UsersBase.getInstance().addConnectedUser(user);
+//        }
+//    }
 }

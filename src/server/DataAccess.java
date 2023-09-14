@@ -39,6 +39,7 @@ public Boolean logIn(User user) throws Exception {
             if (rs != null) {
            while(rs.next()) {
                if (user.getUserName().equals(rs.getString(1)) && user.getPassword().equals(rs.getString(2))) {
+                   UpdateState(user.getUserName(), 0);
                     return true;
                 }  
             }
@@ -111,4 +112,64 @@ private void addUserToDataBase(User user) throws SQLException, Exception{
        pst.close();
 }
 
+public void UpdateScore(String username, int result) throws SQLException {
+        int scoreToAdd = 0;
+        con.setAutoCommit(false);
+        String sql = "UPDATE USERS SET SCORE = SCORE + ? WHERE USER_NAME = ?";
+        PreparedStatement pst = con.prepareStatement(sql);
+        switch(result){
+            //winning case
+            case 0: scoreToAdd = 5;
+            break;
+            //losing case
+            case 1: scoreToAdd = -5;
+            break;
+            //draw case
+            case 2: scoreToAdd =0 ;
+            break;
+            default: scoreToAdd = 0;
+            break;
+        }
+        pst.setInt(1,scoreToAdd );
+        pst.setString(2, username);
+        pst.addBatch();
+        pst.executeBatch();
+        con.commit();
+        pst.close();
+        
+        
+    
 }
+
+public void UpdateState(String username, int result) throws SQLException {
+        String stateToChange = "offline";
+        con.setAutoCommit(false);
+        String sql = "UPDATE USERS SET STATE =  ? WHERE USER_NAME = ?";
+        PreparedStatement pst = con.prepareStatement(sql);
+        switch(result){
+            //Login case
+            case 0: stateToChange ="online";
+            break;
+            //Logout case
+            case 1: stateToChange ="offline";
+            break;
+            //inGame case
+            case 2: stateToChange ="in_game" ;
+            break;
+            default: stateToChange ="offline";
+            break;
+        }
+        pst.setString(1,stateToChange );
+        pst.setString(2, username);
+        pst.addBatch();
+        pst.executeBatch();
+        con.commit();
+        pst.close();
+        
+        
+    
+}
+        
+    
+}
+
