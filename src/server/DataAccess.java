@@ -110,5 +110,54 @@ private void addUserToDataBase(User user) throws SQLException, Exception{
        con.commit();
        pst.close();
 }
+public void UpdateScore(String username, int result) throws SQLException {
+        int scoreToAdd = 0;
+        con.setAutoCommit(false);
+        String sql = "UPDATE USERS SET SCORE = SCORE + ? WHERE USER_NAME = ?";
+        PreparedStatement pst = con.prepareStatement(sql);
+        switch(result){
+            //winning case
+            case 0: scoreToAdd = 5;
+            //losing case
+            case 1: scoreToAdd = -5;
+            //draw case
+            case 2: scoreToAdd =0 ;
+            default: scoreToAdd = 0;
+        }
+        pst.setInt(1,scoreToAdd );
+        pst.setString(2, username);
+        pst.addBatch();
+        pst.executeBatch();
+        con.commit();
+        pst.close();
+        
+        
+    
+}
+
+public void UpdateState(String username, int result) throws SQLException {
+        String stateToChange = "offline";
+        con.setAutoCommit(false);
+        String sql = "UPDATE USERS SET STATE =  ? WHERE USER_NAME = ?";
+        PreparedStatement pst = con.prepareStatement(sql);
+        switch(result){
+            //Login case
+            case 0: stateToChange ="online";
+            //Logout case
+            case 1: stateToChange ="offline";
+            //inGame case
+            case 2: stateToChange ="in_game" ;
+            default: stateToChange ="offline";
+        }
+        pst.setString(1,stateToChange );
+        pst.setString(2, username);
+        pst.addBatch();
+        pst.executeBatch();
+        con.commit();
+        pst.close();
+        
+        
+    
+}
 
 }
