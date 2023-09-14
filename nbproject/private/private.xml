@@ -5,6 +5,8 @@
         <group>
             <file>file:/D:/Projects/JavaITI/TicTacToe/Server/src/server/utils/Constants.java</file>
             <file>file:/D:/Projects/JavaITI/TicTacToe/Server/src/server/ServerHandler2.java</file>
+            <file>file:/D:/Projects/JavaITI/TicTacToe/Server/src/server/UsersBase.java</file>
+            <file>file:/D:/Projects/JavaITI/TicTacToe/Server/src/server/DataAccess.java</file>
         </group>
     </open-files>
 </project-private>
