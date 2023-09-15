@@ -1,6 +1,7 @@
 package server;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -22,6 +23,7 @@ public class ServerHandler extends Thread {
     DataAccess dataAccess = new DataAccess();
     String typeOfOperation;
     BufferedReader bufferedReader;
+    BufferedWriter bufferedWriter ;
     String result = "";
     String userName = "";
     String opUserName = "";
@@ -119,8 +121,17 @@ public class ServerHandler extends Thread {
                             System.out.println("====result: " + resultt);// OK
                             
                             System.out.println("=====I will send userName: " + userName);
-                            prrintStream.println(userName);
-                            System.out.println("=====I will send result: " + resultt);
+                         //   prrintStream.println(userName);
+                           
+                         
+                                for (ServerHandler object : UsersBase.vector) {
+                                    
+                                 if (object.useNameG.equals(userName)) {
+                                   System.out.println("=====I will send result: " + result);
+                                     object.prrintStream.println(resultt);
+                                }
+                                }
+                         System.out.println("=====I will send result: " + resultt);
                             prrintStream.println(resultt);
                             
                             
