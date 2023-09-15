@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import server.models.User;
@@ -32,13 +32,12 @@ public class UsersBase extends AnchorPane {
     protected final ListView<String> onlineList;
     ServerSocket serverSocket;
     private Boolean isServerRunning = true;
-
     // Create observable lists for each user state
     private ObservableList<String> offlineUsers = FXCollections.observableArrayList();
     private ObservableList<String> inGameUsers = FXCollections.observableArrayList();
     private ObservableList<String> onlineUsers = FXCollections.observableArrayList();
-
-    private static UsersBase instance; // Static instance variable
+    static  Vector<ServerHandler> vector = new Vector<>();;
+    private static UsersBase instance; 
 
     public UsersBase() {
         label = new Label();
@@ -50,7 +49,7 @@ public class UsersBase extends AnchorPane {
         offlineList = new ListView<>();
         inGameList = new ListView<>();
         onlineList = new ListView<>();
-
+    
         setId("AnchorPane");
         setPrefHeight(400.0);
         setPrefWidth(600.0);
@@ -92,18 +91,16 @@ public class UsersBase extends AnchorPane {
 
         // Initially, the stop button and dashboard button should be disabled
         startButton.setDisable(true);
-        
 
-       dashboardButton.setLayoutX(416.0);
-       dashboardButton.setLayoutY(349.0);
-       dashboardButton.setMnemonicParsing(false);
-       dashboardButton.setPrefHeight(31.0);
-       dashboardButton.setPrefWidth(161.0);
-       dashboardButton.setStyle("-fx-background-color: #A52A2A");
-       dashboardButton.setText("Dashboard");
-       dashboardButton.setTextFill(javafx.scene.paint.Color.WHITE);
-       dashboardButton.setFont(new Font(18.0));
-
+        dashboardButton.setLayoutX(416.0);
+        dashboardButton.setLayoutY(349.0);
+        dashboardButton.setMnemonicParsing(false);
+        dashboardButton.setPrefHeight(31.0);
+        dashboardButton.setPrefWidth(161.0);
+        dashboardButton.setStyle("-fx-background-color: #A52A2A");
+        dashboardButton.setText("Dashboard");
+        dashboardButton.setTextFill(javafx.scene.paint.Color.WHITE);
+        dashboardButton.setFont(new Font(18.0));
 
         offlineList.setLayoutX(31.0);
         offlineList.setLayoutY(58.0);
@@ -129,7 +126,7 @@ public class UsersBase extends AnchorPane {
         getChildren().add(offlineList);
         getChildren().add(inGameList);
         getChildren().add(onlineList);
-        
+
         // Get Users
         DataAccess dataAccess = new DataAccess();
         try {
@@ -153,8 +150,13 @@ public class UsersBase extends AnchorPane {
             while (isServerRunning) {
                 try {
                     Socket s = serverSocket.accept();
-//                    ServerHandler handler = new ServerHandler(s, isServerRunning);
-                    ServerHandler2 handler = new ServerHandler2(s, isServerRunning);
+
+                    ServerHandler handler = new ServerHandler(s, isServerRunning);
+
+                    vector.add(handler);
+              
+                   
+                    System.out.println(vector.size());
                 } catch (IOException ex) {
                     Logger.getLogger(UsersBase.class.getName()).log(Level.SEVERE, null, ex);
                 }

@@ -101,13 +101,13 @@ public class ServerHandler2 extends Thread {
                             ps.println(users.get(i));
                         }
                         
-                    } else if (str.equals(Constants.PLAY_WITH_USER)) {
-                        // Client clicked on one of the users to play with
-                        String userName1 = br.readLine();
-                        String userName2 = br.readLine();
-                        
-                        ps.println(userName2); // Return UserName2
-                        ps.println(Constants.PLAY_WITH_USER); // Return PLAY_WITH_USER
+//                    } else if (str.equals(Constants.PLAY_WITH_USER)) {
+//                        // Client clicked on one of the users to play with
+//                        String userName1 = br.readLine();
+//                        String userName2 = br.readLine();
+//                        
+//                        ps.println(userName2); // Return UserName2
+//                        ps.println(Constants.PLAY_WITH_USER); // Return PLAY_WITH_USER
                         
                     } else if (str.equals(Constants.PLAY_WITH_USER_RESPONSE)) {
                         String userName = dis.readLine();

@@ -14,122 +14,142 @@ import server.models.User;
 import server.utils.Constants;
 
 public class ServerHandler extends Thread {
-    
-    DataInputStream dis ;
-    PrintStream ps;
+
+    DataInputStream dataInputStream;
+    PrintStream prrintStream;
+    String useNameG;
     Boolean isServerRunning;
-            DataAccess dataAccess = new DataAccess();
+    DataAccess dataAccess = new DataAccess();
+    String typeOfOperation;
+    BufferedReader bufferedReader;
+    String result = "";
+    String userName = "";
+    String opUserName = "";
 
     public ServerHandler(Socket socket, Boolean isServerRunning) {
         this.isServerRunning = isServerRunning;
         try {
-            dis = new DataInputStream(socket.getInputStream());
-            ps = new PrintStream(socket.getOutputStream());
+            dataInputStream = new DataInputStream(socket.getInputStream());
+            prrintStream = new PrintStream(socket.getOutputStream());
+
         } catch (IOException ex) {
             Logger.getLogger(ServerHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
         start();
     }
-    
+
+    @Override
     public void run() {
-        
-        while(true) {
-            String str;
+        while (true) {
             try {
-                BufferedReader br = new BufferedReader(new InputStreamReader(dis));
-                  str = br.readLine();
+                bufferedReader = new BufferedReader(new InputStreamReader(dataInputStream));
+                typeOfOperation = bufferedReader.readLine();
+                System.out.println(typeOfOperation);
                 if (isServerRunning) {
-                 ps.println(Constants.SERVER_RUNNING); // Server Running
-                 if(str!=null){
-                    if (str.equals(Constants.LOGIN)) {
-                        // Log in
-                        String userName = br.readLine();
-                        String password = br.readLine();
-                        try {
-                            ps.println(userName); // Return UserName
-                            ps.println(Constants.LOGIN); // Return Log In
-                            User user = new User(userName, password, server.models.State.ONLINE);
-                            if (dataAccess.logIn(user)) {
-                                // Log In Complete
-                                ps.println(Constants.VALID_LOGIN);
-                                // Send the connected user to UsersBase
-//                                sendConnectedUserToUsersBase(user);
-                            } else {
-                                // Wrong UserName or Password
-                                ps.println(Constants.NOT_VALID_LOGIN);
-                            }
-                        } catch (Exception ex) {
-                            Logger.getLogger(ServerHandler.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                        
-                    } else if (str.equals(Constants.REGISTER)) {
-                        // Sign up
-                        String userName = br.readLine();
-                        String password = br.readLine();
-                        try {
-                            ps.println(userName); // Return UserName
-                            ps.println(Constants.REGISTER); // Return Sign Up
-                            User user = new User(userName, password, server.models.State.ONLINE);
-                            if (dataAccess.signUp(user)) {
-                                // Sign Up Complete
-                                ps.println(Constants.VALID_REGISTER);
-                                // Send the connected user to UsersBase
-//                                sendConnectedUserToUsersBase(user);
-                            } else {
-                                // Sign Up Failed
-                                ps.println(Constants.NOT_VALID_REGISTER);
-                            }
-                        } catch (SQLException ex) {
-                            Logger.getLogger(ServerHandler.class.getName()).log(Level.SEVERE, null, ex);
-                        } catch (Exception ex) {
-                            Logger.getLogger(ServerHandler.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    }
-                    
-                    else if (str.equals(Constants.GET_USERS)) {
-                        // Client wants to get all users
-                        String userName1 = br.readLine();
-                        ps.println(userName1); // Return UserName
-                        ps.println(Constants.GET_USERS); // Return GetUsers
-                        
-                        // Return Users
-                        ArrayList<String> users = dataAccess.getOnlineUsers();
-                        int noOfUsers = users.size();
-                        ps.println(noOfUsers);
-                        for (int i = 0; i < noOfUsers; i++) {
-                            ps.println(users.get(i));
-                        }
-                        
-                    } else if (str.equals(Constants.PLAY_WITH_USER)) {
-                        // Client clicked on one of the users to play with
-                        String userName1 = br.readLine();
-                        String userName2 = br.readLine();
-                        
-                        ps.println(userName2); // Return UserName2
-                        ps.println(Constants.PLAY_WITH_USER); // Return PLAY_WITH_USER
-                        
-                    } else if (str.equals(Constants.PLAY_WITH_USER_RESPONSE)) {
-                        String userName = dis.readLine();
-                        String userResponse = dis.readLine();
-                        ps.println(userName);
-                        ps.println(Constants.PLAY_WITH_USER_RESPONSE);
+
+                    prrintStream.println(Constants.SERVER_RUNNING);
+
+                    if (typeOfOperation != null) {
+                        if (typeOfOperation.equals(Constants.LOGIN)) {
+                            loginChecker();
+                        } else if (typeOfOperation.equals(Constants.REGISTER)) {
+                            RegisterChecker();
+                        } else if (typeOfOperation.equals(Constants.GET_USERS)) {
+                            getUsers();
+                        } else if (typeOfOperation.equals(Constants.SEND_REQUEST_TO_PLAY)) {
+                            playWithOther();
+                        } else if (typeOfOperation.equals(Constants.PLAY_WITH_USER_RESPONSE)) {
+                        String userName = dataInputStream.readLine();
+                        String userResponse = dataInputStream.readLine();
+                        prrintStream.println(userName);
+                        prrintStream.println(Constants.PLAY_WITH_USER_RESPONSE);
                         if (userResponse.equals(Constants.USER_ACCEPTED)) {
-                            ps.println(Constants.USER_ACCEPTED);
+                            prrintStream.println(Constants.USER_ACCEPTED);
                             
                             System.out.println("User Accepted");
                             
                         } else {
-                            ps.println(Constants.USER_REJECTED);
+                            prrintStream.println(Constants.USER_REJECTED);
                             
                             System.out.println("User Accepted");
                             
                         }
+                    } else if (typeOfOperation.equals(Constants.PLAY_ONLINE)) {
+                        String userName = bufferedReader.readLine();
+                        String x = bufferedReader.readLine();
+                        String y = bufferedReader.readLine();
+                        System.out.println("USERNAME: " + userName);
+                        System.out.println("x: " + x);
+                        System.out.println("y: " + y);
+                        
+                        prrintStream.println(userName);
+                        prrintStream.println(x);
+                        prrintStream.println(y);
+                    } else if (typeOfOperation.equals(Constants.CHANGE_STATE)) {
+                        String userName = bufferedReader.readLine();
+                        String state = bufferedReader.readLine();
+                        if (state.equals("offline")) {
+                            dataAccess.UpdateState(userName, 1);
+                        } else if (state.equals("in_game")) {
+                            dataAccess.UpdateState(userName, 2);
+                        }
+                    } else if (typeOfOperation.equals(Constants.CHANGE_SCORE)) {
+                        String userName = bufferedReader.readLine();
+                        String gameState = bufferedReader.readLine();
+//                        dataAccess.UpdateState(userName, 0);
+                        switch(gameState) {
+                            case "win":
+                                dataAccess.UpdateScore(userName, 0);
+                                break;
+                            case "lose":
+                                dataAccess.UpdateScore(userName, 1);
+                                break;
+                            case "draw":
+                                dataAccess.UpdateScore(userName, 2);
+                                break;
+                        }
+                    } else if (typeOfOperation.equals(Constants.RESULT)) {
+                        System.out.println("=====I recieved result ");
+                        
+                        System.out.println("=====I will recieve userName ");
+                            
+                        String userName = dataInputStream.readLine();
+                            System.out.println("=====userName: " + userName);
+                            String resultt= dataInputStream.readLine();        
+                            System.out.println("====result: " + resultt);// OK
+                            
+                            System.out.println("=====I will send userName: " + userName);
+                            prrintStream.println(userName);
+                            System.out.println("=====I will send result: " + resultt);
+                            prrintStream.println(resultt);
+                            
+                            
+                            
+//                                for (ServerHandler object : UsersBase.vector) {
+//                                    
+//                                    System.out.println(object.useNameG);
+//                                     System.out.println(userName);
+//
+//                                 if (object.useNameG.equals(userName)) {
+//                                   System.out.println(object.useNameG);
+//                                   System.out.println("=====I will send result: " + result);
+//                                     object.prrintStream.println(resultt);
+//                                }
+//                                 
+//                                 
+//                                 }
+                                
+                          
+               
+                
+                        }
+                    } else {
+                        System.out.println("null type");
                     }
-                }
+
                 } else {
-                    // Server Stopped
-                    ps.println(Constants.SERVER_STOP);
-}
+                    prrintStream.println(Constants.SERVER_STOP);
+                }
             } catch (IOException ex) {
                 Logger.getLogger(ServerHandler.class.getName()).log(Level.SEVERE, null, ex);
             } catch (Exception ex) {
@@ -138,10 +158,81 @@ public class ServerHandler extends Thread {
         }
     }
 
-    // Send the connected user to the UsersBase class
-//    private void sendConnectedUserToUsersBase(User user) {
-//        if (UsersBase.getInstance() != null) {
-//            UsersBase.getInstance().addConnectedUser(user);
-//        }
-//    }
+    void loginChecker() throws Exception {
+        String userName = bufferedReader.readLine();
+        String password = bufferedReader.readLine();
+        prrintStream.println(userName); // Return UserName
+        prrintStream.println(Constants.LOGIN); // Return Log In
+        User user = new User(userName, password, server.models.State.ONLINE);
+        if (dataAccess.logIn(user)) {
+            prrintStream.println(Constants.VALID_LOGIN);
+            useNameG = userName;
+        } else {
+            prrintStream.println(Constants.NOT_VALID_LOGIN);
+        }
+
+    }
+
+    void RegisterChecker() throws Exception {
+
+        String userName = bufferedReader.readLine();
+        String password = bufferedReader.readLine();
+
+        prrintStream.println(userName);
+        prrintStream.println(Constants.REGISTER);
+        User user = new User(userName, password, server.models.State.ONLINE);
+        if (dataAccess.signUp(user)) {
+            prrintStream.println(Constants.VALID_REGISTER);
+            useNameG = userName;
+        } else {
+            prrintStream.println(Constants.NOT_VALID_REGISTER);
+        }
+
+    }
+
+    void getUsers() throws Exception {
+
+        // Client wants to get all users
+        String userName1 = bufferedReader.readLine();
+        prrintStream.println(userName1); // Return UserName
+        prrintStream.println(Constants.GET_USERS); // Return GetUsers
+
+        for (ServerHandler object : UsersBase.vector) {
+            System.out.println(object.useNameG);
+        }
+
+        // Return Users
+        ArrayList<String> users = dataAccess.getOnlineUsers();
+        int noOfUsers = users.size();
+        prrintStream.println(noOfUsers);
+        for (int i = 0; i < noOfUsers; i++) {
+            prrintStream.println(users.get(i));
+        }
+
+    }
+
+    void playWithOther() throws IOException {
+        
+        System.out.println("=====I recieved request to play ");
+
+        userName = bufferedReader.readLine();
+        System.out.println("====username: " + userName);
+        opUserName = bufferedReader.readLine();
+        System.out.println("=====op user name : " + opUserName);
+
+        for (ServerHandler object : UsersBase.vector) {
+
+            if (object.useNameG.equals(opUserName)) {
+                System.out.println("=====I will print userName: " + opUserName);
+                object.prrintStream.println(userName);
+//                result = object.bufferedReader.readLine();
+//                System.out.println(result);
+            }
+
+//            if (object.useNameG.equals(userName)) {
+//                object.prrintStream.println(result);
+//            }
+
+        }
+    }
 }
