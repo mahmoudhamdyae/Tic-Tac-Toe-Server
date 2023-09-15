@@ -131,8 +131,8 @@ public class ServerHandler extends Thread {
                                      object.prrintStream.println(resultt);
                                 }
                                 }
-                         System.out.println("=====I will send result: " + resultt);
-                            prrintStream.println(resultt);
+                         //System.out.println("=====I will send result: " + resultt);
+                           // prrintStream.println(resultt);
                             
                             
                             
