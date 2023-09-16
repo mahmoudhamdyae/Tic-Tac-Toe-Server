@@ -46,4 +46,5 @@ public    final static String LOGIN="LOGIN";
     public    final static int PORT=5008;
     
     public final static String RESULT = "RESULT";
+    public static String PRINT_NEXT_MOVE = "PRINT_NEXT_MOVE";
 }

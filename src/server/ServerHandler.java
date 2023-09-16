@@ -5,6 +5,7 @@ import java.io.BufferedWriter;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.net.Socket;
 import java.sql.SQLException;
@@ -18,6 +19,7 @@ public class ServerHandler extends Thread {
 
     DataInputStream dataInputStream;
     PrintStream prrintStream;
+    
     String useNameG;
     Boolean isServerRunning;
     DataAccess dataAccess = new DataAccess();
@@ -27,12 +29,15 @@ public class ServerHandler extends Thread {
     String result = "";
     String userName = "";
     String opUserName = "";
-
+    String opUserNamePlayer;
+    String x ;
+    String y ;
     public ServerHandler(Socket socket, Boolean isServerRunning) {
         this.isServerRunning = isServerRunning;
         try {
             dataInputStream = new DataInputStream(socket.getInputStream());
             prrintStream = new PrintStream(socket.getOutputStream());
+            bufferedWriter = new BufferedWriter(new OutputStreamWriter(prrintStream));
 
         } catch (IOException ex) {
             Logger.getLogger(ServerHandler.class.getName()).log(Level.SEVERE, null, ex);
@@ -77,17 +82,44 @@ public class ServerHandler extends Thread {
                             
                         }
                     } else if (typeOfOperation.equals(Constants.PLAY_ONLINE)) {
-                        String userName = bufferedReader.readLine();
-                        String x = bufferedReader.readLine();
-                        String y = bufferedReader.readLine();
-                        System.out.println("USERNAME: " + userName);
+                        System.out.println("E7na hna k type : "+ typeOfOperation);
+                        opUserNamePlayer = bufferedReader.readLine();
+                        x = bufferedReader.readLine();
+                        y = bufferedReader.readLine();
+                        System.out.println("USERNAME: " + opUserNamePlayer);
                         System.out.println("x: " + x);
                         System.out.println("y: " + y);
-                        
-                        prrintStream.println(userName);
-                        prrintStream.println(x);
-                        prrintStream.println(y);
-                    } else if (typeOfOperation.equals(Constants.CHANGE_STATE)) {
+                        for(ServerHandler object : UsersBase.vector){
+                            System.out.println(object.useNameG+"  userNameG");
+                            if(object.useNameG.equals(opUserNamePlayer)){
+                              object.bufferedWriter.write(x);
+                              object.bufferedWriter.newLine();
+                              object.bufferedWriter.write(y);
+                              object.bufferedWriter.flush();
+                              System.out.println("sending to op name     " + opUserNamePlayer+" x"+ x+" and y"+ y);
+                           break;
+                           
+                        }
+                    }
+                    }
+                   /* else if(typeOfOperation.equals(Constants.PRINT_NEXT_MOVE)){ 
+                            System.out.println("E7na hna k type : "+ typeOfOperation);
+                    if(opUserNamePlayer != null ){
+                        for(ServerHandler object : UsersBase.vector){
+                            System.out.println(object.useNameG);
+                            if(object.useNameG.equals(opUserNamePlayer)){
+                                System.out.println("sending to op name     " + opUserNamePlayer+" x"+ x+" and y"+ y);
+                              object.prrintStream.println(x);
+                              object.prrintStream.println(y);
+                              opUserName =null;
+                              break;
+                            }
+                            
+                        }
+                        }
+                                         
+                    }*/ 
+                    else if (typeOfOperation.equals(Constants.CHANGE_STATE)) {
                         String userName = bufferedReader.readLine();
                         String state = bufferedReader.readLine();
                         if (state.equals("offline")) {
