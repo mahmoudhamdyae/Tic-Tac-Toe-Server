@@ -152,11 +152,11 @@ public class UsersBase extends AnchorPane {
                     Socket s = serverSocket.accept();
 
                     ServerHandler handler = new ServerHandler(s, isServerRunning);
-
-                    vector.add(handler);
-              
-                   
-                    System.out.println(vector.size());
+//                    vector.add(handler);
+//                    System.out.println("vector size" + vector.size()+ " vector name "+ vector.get(vector.size()-1).useNameG);
+//                    
+//                   
+//                    System.out.println("vector" + vector.size());
                 } catch (IOException ex) {
                     Logger.getLogger(UsersBase.class.getName()).log(Level.SEVERE, null, ex);
                 }

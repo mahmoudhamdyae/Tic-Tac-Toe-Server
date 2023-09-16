@@ -39,7 +39,7 @@ public class ServerHandler extends Thread {
             dataInputStream = new DataInputStream(socket.getInputStream());
             prrintStream = new PrintStream(socket.getOutputStream());
             bufferedWriter = new BufferedWriter(new OutputStreamWriter(prrintStream));
-
+              
         } catch (IOException ex) {
             Logger.getLogger(ServerHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -50,9 +50,10 @@ public class ServerHandler extends Thread {
     public void run() {
         while (state) {
             try {
-                bufferedReader = new BufferedReader(new InputStreamReader(dataInputStream));
+            bufferedReader = new BufferedReader(new InputStreamReader(dataInputStream));
+            
                 typeOfOperation = bufferedReader.readLine();
-                System.out.println(typeOfOperation);
+                System.out.println("type of operation is " +typeOfOperation);
                 
                     if (typeOfOperation != null) {
                 if (isServerRunning) {
@@ -68,8 +69,11 @@ public class ServerHandler extends Thread {
                         } else if (typeOfOperation.equals(Constants.SEND_REQUEST_TO_PLAY)) {
                             playWithOther();
                         } else if (typeOfOperation.equals(Constants.PLAY_WITH_USER_RESPONSE)) {
-                        String userName = dataInputStream.readLine();
-                        String userResponse = dataInputStream.readLine();
+                         
+                         String userName = dataInputStream.readLine();
+                         useNameG = userName;
+                            
+                         String userResponse = dataInputStream.readLine();
                         prrintStream.println(userName);
                         prrintStream.println(Constants.PLAY_WITH_USER_RESPONSE);
                         if (userResponse.equals(Constants.USER_ACCEPTED)) {
@@ -84,21 +88,37 @@ public class ServerHandler extends Thread {
                             
                         }
                     } else if (typeOfOperation.equals(Constants.PLAY_ONLINE)) {
+                        
                         System.out.println("E7na hna k type : "+ typeOfOperation);
                         opUserNamePlayer = bufferedReader.readLine();
+                        
+                        useNameG = userName;
+                        
                         x = bufferedReader.readLine();
                         y = bufferedReader.readLine();
                         System.out.println("USERNAME: " + opUserNamePlayer);
                         System.out.println("x: " + x);
                         System.out.println("y: " + y);
+                        
+//                        UsersBase.vector.get(3).bufferedWriter.write(x);
+//                        
+//                            System.out.println(UsersBase.vector.get(3).useNameG);
+//
+//                        UsersBase.vector.get(3).bufferedWriter.newLine();
+//
+//                        UsersBase.vector.get(3).bufferedWriter.write(y);
+//
+//                        UsersBase.vector.get(3).bufferedWriter.flush();                        
                         for(ServerHandler object : UsersBase.vector){
-                            System.out.println(object.useNameG+"  userNameG");
+                           // System.out.println(object.useNameG+"  userNameG");
                             if(object.useNameG.equals(opUserNamePlayer)){
-                              object.bufferedWriter.write(x);
-                              object.bufferedWriter.newLine();
-                              object.bufferedWriter.write(y);
-                              object.bufferedWriter.flush();
-                              System.out.println("sending to op name     " + opUserNamePlayer+" x"+ x+" and y"+ y);
+//                              object.bufferedWriter.write(x);
+//                              object.bufferedWriter.newLine();
+//                              object.bufferedWriter.write(y);
+//                              object.bufferedWriter.flush();
+                            prrintStream.println(x);
+                            prrintStream.println(y);
+                            System.out.println("sending to op name     " + opUserNamePlayer+" x"+ x+" and y"+ y);
                            break;
                            
                         }
@@ -161,7 +181,7 @@ public class ServerHandler extends Thread {
                                 for (ServerHandler object : UsersBase.vector) {
                                     
                                  if (object.useNameG.equals(userName)) {
-                                   System.out.println("=====I will send result: " + result);
+                                   System.out.println("=====I will send result: " + resultt);
                                      object.prrintStream.println(resultt);
                                 }
                                 }
@@ -213,8 +233,15 @@ public class ServerHandler extends Thread {
         prrintStream.println(Constants.LOGIN); // Return Log In
         User user = new User(userName, password, server.models.State.ONLINE);
         if (dataAccess.logIn(user)) {
+            
             prrintStream.println(Constants.VALID_LOGIN);
+            UsersBase.vector.add(this);
             useNameG = userName;
+            
+            
+            for(ServerHandler object : UsersBase.vector){
+            System.out.println("vector :" +object.useNameG);
+            }
         } else {
             prrintStream.println(Constants.NOT_VALID_LOGIN);
         }
@@ -267,7 +294,7 @@ public class ServerHandler extends Thread {
         System.out.println("====username: " + userName);
         opUserName = bufferedReader.readLine();
         System.out.println("=====op user name : " + opUserName);
-
+        useNameG= userName;
         for (ServerHandler object : UsersBase.vector) {
 
             if (object.useNameG.equals(opUserName)) {
