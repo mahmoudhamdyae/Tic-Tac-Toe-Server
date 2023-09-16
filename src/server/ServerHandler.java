@@ -27,6 +27,7 @@ public class ServerHandler extends Thread {
     String result = "";
     String userName = "";
     String opUserName = "";
+    boolean state=true;
 
     public ServerHandler(Socket socket, Boolean isServerRunning) {
         this.isServerRunning = isServerRunning;
@@ -42,16 +43,17 @@ public class ServerHandler extends Thread {
 
     @Override
     public void run() {
-        while (true) {
+        while (state) {
             try {
                 bufferedReader = new BufferedReader(new InputStreamReader(dataInputStream));
                 typeOfOperation = bufferedReader.readLine();
                 System.out.println(typeOfOperation);
+                
+                    if (typeOfOperation != null) {
                 if (isServerRunning) {
 
                     prrintStream.println(Constants.SERVER_RUNNING);
 
-                    if (typeOfOperation != null) {
                         if (typeOfOperation.equals(Constants.LOGIN)) {
                             loginChecker();
                         } else if (typeOfOperation.equals(Constants.REGISTER)) {
@@ -153,13 +155,16 @@ public class ServerHandler extends Thread {
                           
                
                 
-                        }
-                    } else {
+                        }else {
                         System.out.println("null type");
                     }
+                    }else{
+                                    prrintStream.println(Constants.SERVER_STOP);
+
+                } 
 
                 } else {
-                    prrintStream.println(Constants.SERVER_STOP);
+                       state= false;
                 }
             } catch (IOException ex) {
                 Logger.getLogger(ServerHandler.class.getName()).log(Level.SEVERE, null, ex);
